@@ -9,11 +9,9 @@ func TestFibonacciTwo(t *testing.T) {
 
 	s := Slc{}
 
-	value := s.Fibonacci()
+	got := s.Fibonacci(2)
 
 	// value := Fibonacci()
-
-	got := value(2)
 
 	want := []int{0, 1}
 
@@ -29,9 +27,7 @@ func TestFibonacciNegative(t *testing.T) {
 
 	s := Slc{}
 
-	value := s.Fibonacci()
-
-	got := value(-4)
+	got := s.Fibonacci(-4)
 
 	want := []int{}
 
@@ -47,9 +43,7 @@ func TestFibonacciFour(t *testing.T) {
 
 	s := Slc{}
 
-	value := s.Fibonacci()
-
-	got := value(4)
+	got := s.Fibonacci(4)
 
 	want := []int{0, 1, 1, 2}
 
@@ -65,9 +59,7 @@ func TestFibonacciFive(t *testing.T) {
 
 	s := Slc{}
 
-	value := s.Fibonacci()
-
-	got := value(5)
+	got := s.Fibonacci(5)
 
 	want := []int{0, 1, 1, 2, 3}
 
@@ -83,9 +75,9 @@ func TestFibonacciThree(t *testing.T) {
 
 	s := Slc{}
 
-	value := s.Fibonacci()
+	got := s.Fibonacci(3)
 
-	got := value(3)
+	// got := value(3)
 
 	want := []int{0, 1, 1}
 
