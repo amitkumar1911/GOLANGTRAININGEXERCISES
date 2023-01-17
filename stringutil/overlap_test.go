@@ -1,77 +1,32 @@
 package stringutil
 
 import (
-	"fmt"
 	"testing"
 )
 
-func TestOverlapOne(t *testing.T) {
+func TestCommonSubstring(t *testing.T) {
 
-	input1 := ""
-	input2 := ""
-
-	want := ""
-
-	got := CommonSubstring(input1, input2)
-
-	if want != got {
-
-		fmt.Println("test case fails")
-	} else {
-		fmt.Println("test case passed")
+	errorTestCases := []struct {
+		name     string
+		input1   string
+		input2   string
+		expected string
+	}{
+		{name: "bothemptystring", input1: "", input2: "", expected: ""},
+		{name: "onestringempty", input1: "", input2: "abc", expected: ""},
+		{name: "commonsubstringatstart", input1: "amitkumar", input2: "amit", expected: "amit"},
+		{name: "commonsubstringatend", input1: "amitkumar", input2: "kumar", expected: "kumar"},
 	}
 
-}
+	for _, value := range errorTestCases {
 
-func TestOverlapTwo(t *testing.T) {
+		got := CommonSubstring(value.input1, value.input2)
 
-	input1 := ""
-	input2 := ""
+		want := value.expected
 
-	want := ""
+		if got != want {
+			t.Errorf("got %q, wanted %q", got, want)
+		}
 
-	got := CommonSubstring(input1, input2)
-
-	if want != got {
-
-		fmt.Println("test case fails")
-	} else {
-		fmt.Println("test case passed")
 	}
-
-}
-func TestOverlapThree(t *testing.T) {
-
-	input1 := ""
-	input2 := "abc"
-
-	want := ""
-
-	got := CommonSubstring(input1, input2)
-
-	if want != got {
-
-		fmt.Println("test case fails")
-	} else {
-		fmt.Println("test case passed")
-	}
-
-}
-
-func TestOverlapFour(t *testing.T) {
-
-	input1 := "abc"
-	input2 := ""
-
-	want := ""
-
-	got := CommonSubstring(input1, input2)
-
-	if want != got {
-
-		fmt.Println("test case fails")
-	} else {
-		fmt.Println("test case passed")
-	}
-
 }

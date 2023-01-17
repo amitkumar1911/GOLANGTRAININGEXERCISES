@@ -25,33 +25,27 @@ func CommonSubstring(s1 string, s2 string) string {
 			}
 
 		}
+		return ans
 
-	} else {
+	}
 
-		var temp string = ""
-		for i := 0; i < len(s2); i++ {
+	var temp string = ""
+	for i := 0; i < len(s2); i++ {
 
-			for j := i; j < len(s2); j++ {
+		for j := i; j < len(s2); j++ {
 
-				temp1 := string(s2[j])
+			temp1 := string(s2[j])
 
-				temp = temp + temp1
+			temp = temp + temp1
 
-				if temp == s1 {
+			if temp == s1 {
 
-					ans = temp
-
-				}
+				ans = temp
 
 			}
 
 		}
+
 	}
 	return ans
-}
-
-func main() {
-
-	CommonSubstring("amitkumar", "kumar")
-
 }
