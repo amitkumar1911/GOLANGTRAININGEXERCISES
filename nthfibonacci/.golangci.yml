@@ -1,0 +1,99 @@
+linters-settings:
+  govet:
+    check-shadowing: true
+  golint:
+    min-confidence: 0
+  gocyclo:
+    min-complexity: 10
+  gocognit:
+    min-complexity: 10
+  maligned:
+    suggest-new: true
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2
+    min-occurrences: 3
+  depguard:
+    list-type: blacklist
+    packages:
+      # logging is allowed only by krogo logger, logrus
+      # is allowed to use only in that package
+      - github.com/sirupsen/logrus
+    packages-with-error-messages:
+      github.com/sirupsen/logrus: "logging is allowed only by krogo logger"
+  misspell:
+    locale: US
+  lll:
+    line-length: 140
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+    disabled-checks:
+      - wrapperFunc
+      - dupImport # https://github.com/go-critic/go-critic/issues/845
+      - ifElseChain
+      - octalLiteral
+  funlen:
+    lines: 100
+    statements: 65
+  
+  linters:
+    # please, do not use `enable-all`: it's deprecated and will be removed soon.
+    # inverted configuration with `enable-all` and `disable` is not scalable during updates of golangci-lint
+    disable-all: true
+    enable:
+      - bodyclose
+      - deadcode
+      #    - depguard
+      - dogsled
+      - dupl
+      - errcheck
+      - funlen
+      - gochecknoglobals
+      - gochecknoinits
+      - gocognit
+      - goconst
+      - gocritic
+      - gocyclo
+      - godox
+      - gofmt
+      - goimports
+      - golint
+      - gosec
+      - gosimple
+      - govet
+      - ineffassign
+      - interfacer
+      - lll
+      - maligned
+      - misspell
+      - nakedret
+      - prealloc
+      - scopelint
+      - staticcheck
+      - structcheck
+      - stylecheck
+      - typecheck
+      - unconvert
+      - unparam
+      - unused
+      - varcheck
+      - whitespace
+      - wsl
+  
+  run:
+    skip-dirs:
+      - configs
+      - migrations
+    skip-files:
+      - ./*/*_test.go
+  
+  # golangci.com configuration
+  # https://github.com/golangci/golangci/wiki/Configuration
+  service:
+    golangci-lint-version: 1.38.x # use the fixed version to not introduce new linters unexpectedly
