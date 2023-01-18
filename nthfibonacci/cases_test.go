@@ -21,6 +21,7 @@ func TestFibonacci(t *testing.T) {
 		{name: "nequals5", input: 5, expected: []int{0, 1, 1, 2, 3}},
 		{name: "nequals8", input: 8, expected: []int{0, 1, 1, 2, 3, 5, 8, 13}},
 		{name: "nequals4", input: 4, expected: []int{0, 1, 1, 2}},
+		{name: "nequals3", input: 3, expected: []int{0, 1, 1}},
 	}
 	for _, value := range errorTestCases {
 
