@@ -1,4 +1,4 @@
-package main
+package routing
 
 import (
 	"database/sql"
@@ -18,15 +18,15 @@ type Person struct {
 func openConnectionToDb(driverName string, dataSourceName string) (*sql.DB, error) {
 
 	db, err := sql.Open(driverName, dataSourceName)
-
 	if err != nil {
 
-		panic(err.Error())
+		return nil, err
 	}
 
 	pingErr := db.Ping()
 	if pingErr != nil {
-		panic(err.Error())
+
+		return nil, pingErr
 	}
 
 	return db, nil
@@ -100,7 +100,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write(a)
 
 	} else {
-		fmt.Fprintln(w, "invalid")
+		w.Write([]byte("invalid"))
 	}
 }
 
