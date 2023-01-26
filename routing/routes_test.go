@@ -11,40 +11,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// func Test_rootHandler(t *testing.T) {
-// 	// type args struct {
-// 	// 	w http.ResponseWriter
-// 	// 	r *http.Request
-// 	// }
-// 	// tests := []struct {
-// 	// 	name string
-// 	// 	args args
-// 	// }{
-// 	// 	// TODO: Add test cases.
-// 	// }
-// 	// for _, tt := range tests {
-// 	// 	t.Run(tt.name, func(t *testing.T) {
-// 	// 		rootHandler(tt.args.w, tt.args.r)
-// 	// 	})
-// 	// }
-
-// expected := "pong"
-// req := httptest.NewRequest(http.MethodGet, "/ping", nil)
-// w := httptest.NewRecorder()
-// 	rootHandler(w, req)
-// 	res := w.Result()
-// 	defer res.Body.Close()
-// 	data, err := ioutil.ReadAll(res.Body)
-// 	gotOutput := strings.Replace(string(data), "\n", "", -1)
-// 	if err != nil {
-// 		t.Errorf("Error: %v", err)
-// 	}
-
-// 	if !reflect.DeepEqual(gotOutput, expected) {
-// 		t.Errorf("got %q, want %q", gotOutput, expected)
-// 	}
-// }
-
 func Test_rootHandler(t *testing.T) {
 
 	tests := []struct {
