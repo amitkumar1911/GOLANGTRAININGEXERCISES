@@ -1,4 +1,4 @@
-package routing
+package main
 
 import (
 	"database/sql"
@@ -8,13 +8,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type person struct {
+type Person struct {
 	Name  string
 	Age   int
 	Phone string
 }
-
-type apiHandler string
 
 func openConnectionToDb(driverName string, dataSourceName string) (*sql.DB, error) {
 
@@ -34,46 +32,74 @@ func openConnectionToDb(driverName string, dataSourceName string) (*sql.DB, erro
 
 }
 
-func (a apiHandler) getPerson(w http.ResponseWriter, r *http.Request) error {
-
-	db, err := openConnectionToDb("mysql", "root:Amit@19sql@tcp(localhost:3306)/recordings")
-
-	if err != nil {
-		return err
-	}
+func getPersonDetails(db *sql.DB) ([]Person, error) {
 
 	rows, err1 := db.Query("SELECT * FROM person")
 
 	if err1 != nil {
-		return err1
+
+		return nil, err1
 	}
 
-	var persons []person
+	var persons []Person
 
 	for rows.Next() {
-		var per person
+		var per Person
 
-		err = rows.Scan(&per.Name, &per.Age, &per.Phone)
+		err2 := rows.Scan(&per.Name, &per.Age, &per.Phone)
+
+		if err2 != nil {
+			return nil, err2
+		}
 
 		persons = append(persons, per)
 	}
-
-	fmt.Println(persons)
-	return nil
+	return persons, nil
 }
 
-func (a apiHandler) insertToPerson(w http.ResponseWriter, r *http.Request) error {
+func insertToPerson() error {
 
 	db, err := openConnectionToDb("mysql", "root:Amit@19sql@tcp(localhost:3306)/recordings")
 
 	if err != nil {
+
 		return err
 	}
 
-	_, err1 := db.Exec("INSERT INTO person VALUES(`amit`,`23`,`123`),(`aman`,`24`,`345`),(`akash`,25,`678`)")
+	query := fmt.Sprintf(`INSERT INTO person`)
+
+	_, err1 := db.Exec("INSERT INTO person (name, age, phone) VALUES(`amit`,23,`123`),(`aman`,24,`345`),(`akash`,25,`678`)")
 
 	if err1 != nil {
+
 		return err1
 	}
+	getPersonDetails(db)
 	return nil
+}
+
+func rootHandler(w http.ResponseWriter, r *http.Request) {
+
+	if r.URL.Path == ("/ping") {
+		fmt.Fprintln(w, "pong")
+
+	} else {
+
+		value := insertToPerson()
+		fmt.Fprintln(w, value)
+
+	}
+}
+
+func main() {
+
+	// var w http.ResponseWriter
+	// var r *http.Request
+
+	err := http.ListenAndServe(":8000", http.HandlerFunc(rootHandler))
+
+	if err != nil {
+		fmt.Println("some error occured while starting server")
+	}
+
 }
