@@ -2,7 +2,10 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
+
+	// "fmt"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -34,6 +37,8 @@ func openConnectionToDb(driverName string, dataSourceName string) (*sql.DB, erro
 
 func getPersonDetails(db *sql.DB) ([]Person, error) {
 
+	count := 0
+
 	rows, err1 := db.Query("SELECT * FROM person")
 
 	if err1 != nil {
@@ -44,6 +49,7 @@ func getPersonDetails(db *sql.DB) ([]Person, error) {
 	var persons []Person
 
 	for rows.Next() {
+		count++
 		var per Person
 
 		err2 := rows.Scan(&per.Name, &per.Age, &per.Phone)
@@ -53,41 +59,50 @@ func getPersonDetails(db *sql.DB) ([]Person, error) {
 		}
 
 		persons = append(persons, per)
+		if count == 1 {
+			break
+		}
 	}
 	return persons, nil
 }
 
-func insertToPerson() error {
+func insertToPerson() ([]Person, error) {
 
 	db, err := openConnectionToDb("mysql", "root:Amit@19sql@tcp(localhost:3306)/recordings")
 
 	if err != nil {
 
-		return err
+		return nil, err
 	}
 
-	query := fmt.Sprintf(`INSERT INTO person`)
+	p := Person{"amit", 21, "123"}
 
-	_, err1 := db.Exec("INSERT INTO person (name, age, phone) VALUES(`amit`,23,`123`),(`aman`,24,`345`),(`akash`,25,`678`)")
+	query := fmt.Sprintf(`INSERT INTO person VALUES("%s","%d","%s")`, p.Name, p.Age, p.Phone)
+
+	_, err1 := db.Exec(query)
 
 	if err1 != nil {
 
-		return err1
+		return nil, err1
 	}
-	getPersonDetails(db)
-	return nil
+	value, err2 := getPersonDetails(db)
+	return value, err2
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.Path == ("/ping") {
+		w.WriteHeader(http.StatusOK)
 		fmt.Fprintln(w, "pong")
 
+	} else if r.URL.Path == "/person" {
+		value, _ := insertToPerson()
+		w.WriteHeader(http.StatusOK)
+		a, _ := json.Marshal(value)
+		w.Write(a)
+
 	} else {
-
-		value := insertToPerson()
-		fmt.Fprintln(w, value)
-
+		fmt.Fprintln(w, "invalid")
 	}
 }
 
