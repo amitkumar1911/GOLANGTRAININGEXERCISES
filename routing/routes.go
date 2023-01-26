@@ -4,8 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-
-	// "fmt"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -107,9 +105,6 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-
-	// var w http.ResponseWriter
-	// var r *http.Request
 
 	err := http.ListenAndServe(":8000", http.HandlerFunc(rootHandler))
 
