@@ -83,10 +83,8 @@ func Test_rootHandler(t *testing.T) {
 		if err != nil {
 			t.Errorf("Error: %v", err)
 		}
-
-		want := tt.want
-		if !reflect.DeepEqual(gotOutput, want) {
-			t.Errorf("got %q, want %q", gotOutput, want)
+		if !reflect.DeepEqual(gotOutput, tt.want) {
+			t.Errorf("got %q, want %q", gotOutput, tt.want)
 		}
 
 	}

@@ -15,6 +15,15 @@ type Person struct {
 	Phone string
 }
 
+type apiHandler struct {
+	db         string
+	connString string
+}
+
+type mydb struct {
+	database *sql.DB
+}
+
 func openConnectionToDb(driverName string, dataSourceName string) (*sql.DB, error) {
 
 	db, err := sql.Open(driverName, dataSourceName)
@@ -64,14 +73,14 @@ func getPersonDetails(db *sql.DB) ([]Person, error) {
 	return persons, nil
 }
 
-func insertToPerson() ([]Person, error) {
+func insertToPerson(db *sql.DB) ([]Person, error) {
 
-	db, err := openConnectionToDb("mysql", "root:Amit@19sql@tcp(localhost:3306)/recordings")
+	//db, err := openConnectionToDb("mysql", "root:Amit@19sql@tcp(localhost:3306)/recordings")
 
-	if err != nil {
+	// if err != nil {
 
-		return nil, err
-	}
+	// 	return nil, err
+	// }
 
 	p := Person{"amit", 21, "123"}
 
@@ -87,14 +96,14 @@ func insertToPerson() ([]Person, error) {
 	return value, err2
 }
 
-func rootHandler(w http.ResponseWriter, r *http.Request) {
+func (m mydb) rootHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.Path == ("/ping") {
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprintln(w, "pong")
 
 	} else if r.URL.Path == "/person" {
-		value, _ := insertToPerson()
+		value, _ := insertToPerson(m.database)
 		w.WriteHeader(http.StatusOK)
 		a, _ := json.Marshal(value)
 		w.Write(a)
@@ -106,9 +115,15 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	err := http.ListenAndServe(":8000", http.HandlerFunc(rootHandler))
+	a := apiHandler{"mysql", "root:Amit@19sql@tcp(localhost:3306)/recordings"}
 
-	if err != nil {
+	db, _ := sql.Open(a.db, a.connString)
+
+	m := mydb{db}
+
+	err1 := http.ListenAndServe(":8000", http.HandlerFunc(m.rootHandler))
+
+	if err1 != nil {
 		fmt.Println("some error occured while starting server")
 	}
 
