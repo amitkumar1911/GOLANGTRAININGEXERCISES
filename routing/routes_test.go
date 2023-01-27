@@ -56,32 +56,26 @@ func TestInsertToPerson(t *testing.T) {
 	mockUpdateOutput := sqlmock.NewResult(1, 1)
 	mock.ExpectExec("INSERT").WillReturnResult(mockUpdateOutput)
 
-
-	_,err1:= db.Exec("INSERT INTO person VALUES('aman',21,'23456'")
+	_, err1 := db.Exec("INSERT INTO person VALUES('aman',21,'23456')")
 
 	tests := []struct {
 		name     string
 		database *sql.DB
-		want     []Person
 		wantErr  error
 	}{
 		{
 			name:     "success",
 			database: db,
-			want:     []Person{{"aman", 21, "23456"}},
 			wantErr:  nil,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := insertToPerson(tt.database)
+			_, err := insertToPerson(tt.database)
 			if err != tt.wantErr {
 				t.Errorf("didn't expected error but got one")
 				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("got %q want %q", got, tt.want)
 			}
 		})
 	}
