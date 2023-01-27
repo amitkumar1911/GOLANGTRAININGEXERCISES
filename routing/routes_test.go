@@ -52,8 +52,12 @@ func TestInsertToPerson(t *testing.T) {
 		t.Error("Failed to connect with database")
 	}
 
-	mock.NewRows([]string{"name", "age", "phone"}).AddRow("aman", 21, "23456")
-	mock.ExpectExec("INSERT").WillReturnResult(NewResult(1, 1))
+	// mock.NewRows([]string{"name", "age", "phone"}).AddRow("aman", 21, "23456")
+	mockUpdateOutput := sqlmock.NewResult(1, 1)
+	mock.ExpectExec("INSERT").WillReturnResult(mockUpdateOutput)
+
+
+	_,err1:= db.Exec("INSERT INTO person VALUES('aman',21,'23456'")
 
 	tests := []struct {
 		name     string
