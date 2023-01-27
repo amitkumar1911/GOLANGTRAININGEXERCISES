@@ -20,7 +20,7 @@ func TestGetPersonDetails(t *testing.T) {
 		t.Error("Failed to connect with database")
 	}
 
-	rs := mock.NewRows([]string{"name", "age", "phn"}).AddRow("Ankit", 21, "918309172")
+	rs := mock.NewRows([]string{"name", "age", "phn"}).AddRow("Amit", 21, "918309172")
 	mock.ExpectQuery("SELECT *").WillReturnRows(rs)
 
 	tests := []struct {
@@ -29,7 +29,7 @@ func TestGetPersonDetails(t *testing.T) {
 		want     []Person
 		wantErr  error
 	}{
-		{name: "Success", database: db, want: []Person{{Name: "Ankit", Age: 21, Phone: "918309172"}}, wantErr: nil},
+		{name: "Success", database: db, want: []Person{{Name: "Amit", Age: 21, Phone: "918309172"}}, wantErr: nil},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -53,16 +53,23 @@ func Test_rootHandler(t *testing.T) {
 		want   string
 	}{
 		{
-			name:   "get/ping",
+			name:   "success case 1",
 			input1: httptest.NewRecorder(),
 			input2: httptest.NewRequest(http.MethodGet, "/ping", nil),
 			want:   "pong",
 		},
 		{
-			name:   "get/person",
+			name:   "success case 2",
 			input1: httptest.NewRecorder(),
 			input2: httptest.NewRequest(http.MethodGet, "/person", nil),
 			want:   string(`[{"Name":"amit","Age":21,"Phone":"123"}]`),
+		},
+
+		{
+			name:   "success case 2",
+			input1: httptest.NewRecorder(),
+			input2: httptest.NewRequest(http.MethodGet, "/hello", nil),
+			want:   "invalid",
 		},
 	}
 
