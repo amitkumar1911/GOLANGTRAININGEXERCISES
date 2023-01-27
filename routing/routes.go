@@ -75,13 +75,6 @@ func getPersonDetails(db *sql.DB) ([]Person, error) {
 
 func insertToPerson(db *sql.DB) ([]Person, error) {
 
-	//db, err := openConnectionToDb("mysql", "root:Amit@19sql@tcp(localhost:3306)/recordings")
-
-	// if err != nil {
-
-	// 	return nil, err
-	// }
-
 	p := Person{"amit", 21, "123"}
 
 	query := fmt.Sprintf(`INSERT INTO person VALUES("%s","%d","%s")`, p.Name, p.Age, p.Phone)
