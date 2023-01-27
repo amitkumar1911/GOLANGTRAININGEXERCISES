@@ -73,7 +73,7 @@ func WriteFile(file *os.File, t []testdb) error {
 		file.Write([]byte(a))
 		file.Write([]byte(","))
 		file.Write([]byte(b))
-
+		file.Write([]byte(","))
 	}
 	return nil
 }
