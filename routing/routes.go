@@ -133,7 +133,7 @@ func (m mydb) updateStudents(w http.ResponseWriter, r *http.Request) {
 		}
 		rno := r.URL.Query().Get("rollno")
 		value, _ := strconv.Atoi(rno)
-		query := fmt.Sprintf("UPDATE student SET name=%s,rollno=%d,age=%d WHERE rollno=%d", s[0].Name, s[0].Rollno, s[0].Age, value)
+		query := fmt.Sprintf(`UPDATE student SET name="%s",rollno="%d",age="%d" WHERE rollno="%d"`, s[0].Name, s[0].Rollno, s[0].Age, value)
 		_, err2 := m.db.Exec(query)
 		if err2 != nil {
 			w.Write([]byte("cannot update data"))

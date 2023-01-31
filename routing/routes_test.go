@@ -113,7 +113,7 @@ func TestPostStudents(t *testing.T) {
 		{name: "get instead of post",
 			input1: httptest.NewRecorder(),
 			input2: httptest.NewRequest(http.MethodGet, "/post/student", nil),
-			want:   string("expected post found some other method"),
+			want:   "expected post found some other method",
 		},
 		{
 			name:   "success post request 1",
@@ -147,3 +147,35 @@ func TestPostStudents(t *testing.T) {
 
 	}
 }
+
+// func TestUpdateStudents(t*testing.T){
+// 	db, mock, err := sqlmock.New()
+
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+
+// 	mockUpdatedOutput := sqlmock.NewResult(1, 1)
+// 	mock.ExpectExec("UPDATE").WillReturnResult(mockUpdatedOutput)
+
+// 	tests:=[]struct{
+// 		name   string
+// 		input1 *httptest.ResponseRecorder
+// 		input2 *http.Request
+// 		want   string
+// 	}{
+// 		{
+// 			name:"invalid request",
+// 			input1:httptest.NewRecorder(),
+// 			input2:httptest.NewRequest(http.MethodGet,"/update/student",nil),
+// 			want: "expected Put found some other method",
+// 		},
+// 		{
+// 			name:"nil io reader",
+// 			input1:httptest.NewRecorder(),
+// 			input2:httptest.NewRequest(http.MethodPut,"/update/student",nil),
+
+// 		}
+// 	}
+
+// }
