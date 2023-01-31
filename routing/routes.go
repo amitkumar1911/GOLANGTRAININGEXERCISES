@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
 )
 
 type student struct {
@@ -26,41 +27,8 @@ func (m mydb) getStudents(w http.ResponseWriter, r *http.Request) {
 	rows, err := m.db.Query("SELECT * FROM student")
 
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer rows.Close()
-	var stu []student
-	for rows.Next() {
-
-		var s student
-		err1 := rows.Scan(&s.Name, &s.Rollno, &s.Age)
-		if err1 != nil {
-			log.Fatal(err1)
-		}
-		stu = append(stu, s)
-	}
-	a, err2 := json.Marshal(stu)
-	if err2 != nil {
-		log.Fatal(err2)
-	}
-	w.Write(a)
-}
-
-func (m mydb) getStudentsByRoll(w http.ResponseWriter, r *http.Request) {
-
-	if r.Method != "GET" {
-		w.Write([]byte("expected get found some other method"))
-	}
-
-	rno := r.URL.Query().Get("rollno")
-	value, _ := strconv.Atoi(rno)
-	query := fmt.Sprintf("SELECT * FROM student WHERE rollno=%d", value)
-
-	rows, err := m.db.Query(query)
-
-	if err != nil {
-		log.Fatal(err)
+		w.Write([]byte("something went wrong"))
+		return
 	}
 
 	defer rows.Close()
@@ -89,15 +57,13 @@ func (m mydb) insertToDb(s []student) {
 	}
 }
 
-func (m mydb) postStudents(w http.ResponseWriter, r *http.Request) {
+func (m mydb) processStudent(w http.ResponseWriter, r *http.Request) {
 
-	if r.Method != "POST" {
-		w.Write([]byte("expected post found some other method"))
-	} else {
+	if r.Method == "POST" {
 		var s []student
 		bytes, err := io.ReadAll(r.Body)
 		if err != nil {
-			w.Write([]byte("cannot unmarshal the data"))
+			w.Write([]byte("test error"))
 			return
 		}
 		err1 := json.Unmarshal(bytes, &s)
@@ -108,17 +74,41 @@ func (m mydb) postStudents(w http.ResponseWriter, r *http.Request) {
 		m.insertToDb(s)
 		w.Write([]byte("data is entered successfully"))
 
+	} else {
+		rows, err := m.db.Query("SELECT * FROM student")
+
+		if err != nil {
+			w.Write([]byte("something went wrong"))
+			return
+		}
+
+		defer rows.Close()
+		var stu []student
+		for rows.Next() {
+
+			var s student
+			err1 := rows.Scan(&s.Name, &s.Rollno, &s.Age)
+			if err1 != nil {
+				w.Write([]byte("cannot process rows"))
+				return
+			}
+			stu = append(stu, s)
+		}
+		a, err2 := json.Marshal(stu)
+		if err2 != nil {
+			w.Write([]byte("failed to do marshalling"))
+			return
+		}
+		w.Write(a)
+
 	}
 
 }
 
-func (m mydb) updateStudents(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "PUT" {
-		w.Write([]byte("expected Put found some other method"))
-	} else {
+func (m mydb) filterByRoll(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "PUT" {
 
 		var s []student
-		fmt.Println(r.Body)
 		bytes, err := io.ReadAll(r.Body)
 		if err != nil {
 			w.Write([]byte("cannot convert to slice of bytes"))
@@ -131,8 +121,8 @@ func (m mydb) updateStudents(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-		rno := r.URL.Query().Get("rollno")
-		value, _ := strconv.Atoi(rno)
+		params := mux.Vars(r)
+		value, _ := strconv.Atoi(params["id"])
 		query := fmt.Sprintf(`UPDATE student SET name="%s",rollno="%d",age="%d" WHERE rollno="%d"`, s[0].Name, s[0].Rollno, s[0].Age, value)
 		_, err2 := m.db.Exec(query)
 		if err2 != nil {
@@ -140,6 +130,35 @@ func (m mydb) updateStudents(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		w.Write([]byte("data is updated successfully"))
+	} else {
+		params := mux.Vars(r)
+		value, _ := strconv.Atoi(params["id"])
+		query := fmt.Sprintf("SELECT * FROM student WHERE rollno=%d", value)
+
+		rows, err := m.db.Query(query)
+
+		if err != nil {
+			w.Write([]byte("something went wrong"))
+			return
+		}
+
+		defer rows.Close()
+		var stu []student
+		for rows.Next() {
+
+			var s student
+			err1 := rows.Scan(&s.Name, &s.Rollno, &s.Age)
+			if err1 != nil {
+				w.Write([]byte("cannot process rows"))
+			}
+			stu = append(stu, s)
+		}
+		a, err2 := json.Marshal(stu)
+		if err2 != nil {
+			w.Write([]byte("failed to do marshalling"))
+			return
+		}
+		w.Write(a)
 	}
 }
 
@@ -152,18 +171,11 @@ func main() {
 	}
 
 	db := mydb{conn}
-	mux := http.NewServeMux()
+	router := mux.NewRouter()
 
-	// h1 := http.HandlerFunc(db.getStudents)
-	// h2 := http.HandlerFunc(db.getStudentsByRoll)
-	// h3 := http.HandlerFunc(db.postStudents)
-	// h4 := http.HandlerFunc(db.updateStudents)
+	router.HandleFunc("/students", db.processStudent)
+	router.HandleFunc("/students/roll/{id}", db.filterByRoll)
 
-	mux.HandleFunc("/students", db.getStudents)
-	mux.HandleFunc("/rollno", db.getStudentsByRoll)
-	mux.HandleFunc("/post/student", db.postStudents)
-	mux.HandleFunc("/update/student", db.updateStudents)
-
-	http.ListenAndServe(":8007", mux)
+	http.ListenAndServe(":8007", router)
 
 }
