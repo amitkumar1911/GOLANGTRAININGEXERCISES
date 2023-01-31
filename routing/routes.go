@@ -22,33 +22,6 @@ type mydb struct {
 	db *sql.DB
 }
 
-func (m mydb) getStudents(w http.ResponseWriter, r *http.Request) {
-
-	rows, err := m.db.Query("SELECT * FROM student")
-
-	if err != nil {
-		w.Write([]byte("something went wrong"))
-		return
-	}
-
-	defer rows.Close()
-	var stu []student
-	for rows.Next() {
-
-		var s student
-		err1 := rows.Scan(&s.Name, &s.Rollno, &s.Age)
-		if err1 != nil {
-			log.Fatal(err1)
-		}
-		stu = append(stu, s)
-	}
-	a, err2 := json.Marshal(stu)
-	if err2 != nil {
-		log.Fatal(err2)
-	}
-	w.Write(a)
-}
-
 func (m mydb) insertToDb(s []student) {
 
 	for i := 0; i < len(s); i++ {
