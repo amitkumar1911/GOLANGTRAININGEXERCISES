@@ -67,11 +67,7 @@ func (m mydb) processStudent(w http.ResponseWriter, r *http.Request) {
 			}
 			stu = append(stu, s)
 		}
-		a, err2 := json.Marshal(stu)
-		if err2 != nil {
-			w.Write([]byte("failed to do marshalling"))
-			return
-		}
+		a, _ := json.Marshal(stu)
 		w.Write(a)
 
 	}
@@ -84,7 +80,7 @@ func (m mydb) filterByRoll(w http.ResponseWriter, r *http.Request) {
 		var s []student
 		bytes, err := io.ReadAll(r.Body)
 		if err != nil {
-			w.Write([]byte("cannot convert to slice of bytes"))
+			w.Write([]byte("test error"))
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -123,14 +119,11 @@ func (m mydb) filterByRoll(w http.ResponseWriter, r *http.Request) {
 			err1 := rows.Scan(&s.Name, &s.Rollno, &s.Age)
 			if err1 != nil {
 				w.Write([]byte("cannot process rows"))
+				return
 			}
 			stu = append(stu, s)
 		}
-		a, err2 := json.Marshal(stu)
-		if err2 != nil {
-			w.Write([]byte("failed to do marshalling"))
-			return
-		}
+		a, _ := json.Marshal(stu)
 		w.Write(a)
 	}
 }
