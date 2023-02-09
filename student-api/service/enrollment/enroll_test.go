@@ -46,3 +46,38 @@ func TestInsert(t *testing.T) {
 		}
 	}
 }
+
+func TestFindRollById(t *testing.T) {
+
+	ctrl := gomock.NewController(t)
+
+	tests := []struct {
+		name      string
+		args      *MockenrollmentStore
+		mockcalls func(*MockenrollmentStore)
+		wantValue []int
+		wantErr   error
+	}{
+		{
+			name: "successfull case",
+			args: NewMockenrollmentStore(ctrl),
+			mockcalls: func(m *MockenrollmentStore) {
+				m.EXPECT().FindRollById(gomock.Any()).Return([]int{}, nil)
+			},
+			wantValue: []int{},
+			wantErr:   nil,
+		},
+	}
+	for _, tt := range tests {
+		tt.mockcalls(tt.args)
+		enSvc := NewEnrollmentService(tt.args)
+		gotValue, gotErr := enSvc.FindRollById(3)
+
+		if !reflect.DeepEqual(gotErr, tt.wantErr) {
+			t.Errorf("got %q, want %q", gotErr, tt.wantErr)
+		}
+		if !reflect.DeepEqual(gotValue, tt.wantValue) {
+			t.Errorf("got %q, want %q", gotValue, tt.wantErr)
+		}
+	}
+}

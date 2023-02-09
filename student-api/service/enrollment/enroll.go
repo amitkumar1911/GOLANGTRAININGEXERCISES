@@ -2,6 +2,7 @@ package enrollment
 
 type enrollmentStore interface {
 	Insert(int, int) error
+	FindRollById(int) ([]int, error)
 }
 
 type enrollmentService struct {
@@ -16,4 +17,9 @@ func (enr enrollmentService) Insert(rollno int, id int) error {
 
 	return enr.enStr.Insert(rollno, id)
 
+}
+
+func (enr enrollmentService) FindRollById(id int) ([]int, error) {
+
+	return enr.enStr.FindRollById(id)
 }

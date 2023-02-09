@@ -33,6 +33,21 @@ func (m *MockenrollmentStore) EXPECT() *MockenrollmentStoreMockRecorder {
 	return m.recorder
 }
 
+// FindRollById mocks base method.
+func (m *MockenrollmentStore) FindRollById(arg0 int) ([]int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindRollById", arg0)
+	ret0, _ := ret[0].([]int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindRollById indicates an expected call of FindRollById.
+func (mr *MockenrollmentStoreMockRecorder) FindRollById(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindRollById", reflect.TypeOf((*MockenrollmentStore)(nil).FindRollById), arg0)
+}
+
 // Insert mocks base method.
 func (m *MockenrollmentStore) Insert(arg0, arg1 int) error {
 	m.ctrl.T.Helper()
