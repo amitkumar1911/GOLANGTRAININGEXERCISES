@@ -78,7 +78,7 @@ func TestCreate(t *testing.T) {
 
 		tt.mockcalls(tt.args)
 		subjectHandler := NewSubjectHandler(tt.args)
-		subjectHandler.Create(tt.w, tt.r)
+		subjectHandler.CreateSubject(tt.w, tt.r)
 		resp := tt.w.Result()
 		defer resp.Body.Close()
 		data, _ := ioutil.ReadAll(resp.Body)
@@ -133,7 +133,7 @@ func TestGet(t *testing.T) {
 
 		tt.mockcalls(tt.args)
 		subjectHandler := NewSubjectHandler(tt.args)
-		subjectHandler.Get(tt.w, tt.r)
+		subjectHandler.GetSubject(tt.w, tt.r)
 		resp := tt.w.Result()
 		defer resp.Body.Close()
 		data, _ := ioutil.ReadAll(resp.Body)

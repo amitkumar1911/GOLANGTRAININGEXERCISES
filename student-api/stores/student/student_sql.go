@@ -60,3 +60,4 @@ func (m StudentDb) StudentExist(rollno int) bool {
 	}
 	return count != 0
 }
+

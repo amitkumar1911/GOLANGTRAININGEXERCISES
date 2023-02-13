@@ -1,4 +1,4 @@
-package handler
+package student
 
 import (
 	"encoding/json"
@@ -15,6 +15,7 @@ type studentService interface {
 	CreateStudent(models.Student) error
 	GetStudent(int) ([]byte, error)
 	CheckExist(int, int) error
+	GetId(int) ([]byte, error)
 }
 
 type studentHandler struct {
@@ -25,7 +26,7 @@ func NewStudentHandler(s studentService) studentHandler {
 	return studentHandler{s}
 }
 
-func (h studentHandler) Get(w http.ResponseWriter, r *http.Request) {
+func (h studentHandler) GetStudent(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
 	value, _ := strconv.Atoi(params["rollno"])
@@ -39,7 +40,7 @@ func (h studentHandler) Get(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(resp))
 }
 
-func (h studentHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h studentHandler) CreateStudent(w http.ResponseWriter, r *http.Request) {
 
 	var s models.Student
 	bytes, err := ioutil.ReadAll(r.Body)
@@ -61,7 +62,7 @@ func (h studentHandler) Create(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (h studentHandler) EnrollSubject(w http.ResponseWriter, r *http.Request) {
+func (h studentHandler) EnrollStudent(w http.ResponseWriter, r *http.Request) {
 
 	params1 := mux.Vars(r)
 	rollno, _ := strconv.Atoi(params1["rollno"])
@@ -74,4 +75,18 @@ func (h studentHandler) EnrollSubject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprint(w, "student has been enrolled")
+}
+
+func (h studentHandler) GetNames(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	rollno, _ := strconv.Atoi(params["rollno"])
+
+	resp, err := h.d.GetId(rollno)
+	if err != nil {
+		fmt.Fprint(w, "some error occured while fetching names")
+		return
+	}
+
+	fmt.Fprint(w, string(resp))
 }

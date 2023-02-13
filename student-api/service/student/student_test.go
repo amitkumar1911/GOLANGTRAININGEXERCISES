@@ -209,3 +209,71 @@ func TestCheckExist(t *testing.T) {
 
 	}
 }
+
+func TestGetRoll(t *testing.T) {
+
+	ctrl := gomock.NewController(t)
+
+	type args struct {
+		stuStr *Mockstudentstore
+		subSvc *MocksubjectService
+		enrSvc *MockenrollmentService
+	}
+
+	tests := []struct {
+		name      string
+		args      args
+		mockcalls func(*Mockstudentstore, *MocksubjectService, *MockenrollmentService)
+		input     int
+		wantValue []byte
+		wantErr   error
+	}{
+		{
+			name: "unsuccessful operation 1",
+			args: args{NewMockstudentstore(ctrl), NewMocksubjectService(ctrl), NewMockenrollmentService(ctrl)},
+			mockcalls: func(mockStudent *Mockstudentstore, mockSubject *MocksubjectService, mockEnr *MockenrollmentService) {
+				mockEnr.EXPECT().FindIdByRoll(gomock.Any()).Return([]int{}, errors.New("some error occured"))
+			},
+			input:     2,
+			wantValue: []byte{},
+			wantErr:   errors.New("some error occured"),
+		},
+
+		{
+			name: "unsuccessful operation 2",
+			args: args{NewMockstudentstore(ctrl), NewMocksubjectService(ctrl), NewMockenrollmentService(ctrl)},
+			mockcalls: func(mockStudent *Mockstudentstore, mockSubject *MocksubjectService, mockEnr *MockenrollmentService) {
+				mockEnr.EXPECT().FindIdByRoll(gomock.Any()).Return([]int{}, nil)
+				mockSubject.EXPECT().FindNamesById(gomock.Any()).Return([]byte{}, errors.New("some error occured")).AnyTimes()
+			},
+			input:     2,
+			wantValue: []byte{},
+			wantErr:   errors.New("some error occured"),
+		},
+		{
+			name: "successful operation",
+			args: args{NewMockstudentstore(ctrl), NewMocksubjectService(ctrl), NewMockenrollmentService(ctrl)},
+			mockcalls: func(mockStudent *Mockstudentstore, mockSubject *MocksubjectService, mockEnr *MockenrollmentService) {
+				mockEnr.EXPECT().FindIdByRoll(gomock.Any()).Return([]int{}, nil)
+				mockSubject.EXPECT().FindNamesById(gomock.Any()).Return([]byte{}, nil).AnyTimes()
+			},
+			input:     2,
+			wantValue: []byte{},
+			wantErr:   nil,
+		},
+	}
+
+	for _, tt := range tests {
+		tt.mockcalls(tt.args.stuStr, tt.args.subSvc, tt.args.enrSvc)
+		stuSvc := NewStudentService(tt.args.stuStr, tt.args.subSvc, tt.args.enrSvc)
+		gotValue, gotErr := stuSvc.GetId(tt.input)
+
+		if !reflect.DeepEqual(gotErr, tt.wantErr) {
+			t.Errorf("got %q, want %q", gotErr, tt.wantErr)
+		}
+		if !reflect.DeepEqual(gotValue, tt.wantValue) {
+			t.Errorf("got %v, want %v", gotValue, tt.wantValue)
+		}
+
+	}
+}

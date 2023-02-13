@@ -3,6 +3,7 @@ package subject
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 
 	"github.com/GOLANGTRAININGEXERCISES/student-api/models"
 )
@@ -55,4 +56,24 @@ func (m SubjectDb) CheckSubjectExist(id int) bool {
 	}
 
 	return count != 0
+}
+
+func (m SubjectDb) FindNamesById(r []int) ([]byte, error) {
+
+	var names []string
+	for i := 0; i < len(r); i++ {
+
+		var n string
+		rows := m.D.QueryRow(`SELECT name from subject WHERE id=?`, r[i])
+
+		err := rows.Scan(&n)
+
+		if err != nil {
+			return []byte{}, errors.New("some error occured")
+		}
+
+		names = append(names, n)
+	}
+	a, _ := json.Marshal(names)
+	return a, nil
 }

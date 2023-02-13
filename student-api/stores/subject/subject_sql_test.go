@@ -160,3 +160,55 @@ func TestCheckSubjectExist(t *testing.T) {
 
 	}
 }
+
+func TestFindNamesById(t *testing.T) {
+
+	tests := []struct {
+		name        string
+		input       []int
+		mockClosure func(sqlmock.Sqlmock)
+		wantValue   []byte
+		wantErr     error
+	}{
+		{
+			name:  "unsuccessfull find operation",
+			input: []int{2},
+			mockClosure: func(mock sqlmock.Sqlmock) {
+				mock.ExpectQuery("SELECT")
+			},
+			wantValue: []byte{},
+			wantErr:   errors.New("some error occured"),
+		},
+		{
+			name:  "successfull find operation",
+			input: []int{2},
+			mockClosure: func(mock sqlmock.Sqlmock) {
+				rs := mock.NewRows([]string{"name"}).AddRow("amit")
+				mock.ExpectQuery("SELECT").WillReturnRows(rs)
+			},
+			wantValue: []byte(`["amit"]`),
+			wantErr:   nil,
+		},
+	}
+
+	for _, tt := range tests {
+		db, mock, err := sqlmock.New()
+		d := SubjectDb{db}
+
+		if err != nil {
+			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		}
+		tt.mockClosure(mock)
+
+		gotValue, gotErr := d.FindNamesById(tt.input)
+
+		if !reflect.DeepEqual(gotValue, tt.wantValue) {
+			t.Errorf("got %q, want %q", gotValue, tt.wantValue)
+		}
+		if !reflect.DeepEqual(gotErr, tt.wantErr) {
+			t.Errorf("got %q, want %q", gotErr, tt.wantErr)
+
+		}
+	}
+
+}

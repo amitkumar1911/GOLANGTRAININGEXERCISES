@@ -24,7 +24,7 @@ func NewSubjectHandler(s subjectService) subjectHandler {
 	return subjectHandler{s}
 }
 
-func (h subjectHandler) Get(w http.ResponseWriter, r *http.Request) {
+func (h subjectHandler) GetSubject(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	value, _ := strconv.Atoi(params["id"])
 	resp, err := h.d.GetSubject(value)
@@ -36,7 +36,7 @@ func (h subjectHandler) Get(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(resp))
 }
 
-func (h subjectHandler) Create(w http.ResponseWriter, r *http.Request) {
+func (h subjectHandler) CreateSubject(w http.ResponseWriter, r *http.Request) {
 
 	var s models.Subject
 	bytes, err := ioutil.ReadAll(r.Body)

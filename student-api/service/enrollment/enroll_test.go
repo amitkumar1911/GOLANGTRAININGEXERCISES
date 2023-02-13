@@ -62,7 +62,7 @@ func TestFindRollById(t *testing.T) {
 			name: "successfull case",
 			args: NewMockenrollmentStore(ctrl),
 			mockcalls: func(m *MockenrollmentStore) {
-				m.EXPECT().FindRollById(gomock.Any()).Return([]int{}, nil)
+				m.EXPECT().FindIdByRoll(gomock.Any()).Return([]int{}, nil)
 			},
 			wantValue: []int{},
 			wantErr:   nil,
@@ -71,7 +71,7 @@ func TestFindRollById(t *testing.T) {
 	for _, tt := range tests {
 		tt.mockcalls(tt.args)
 		enSvc := NewEnrollmentService(tt.args)
-		gotValue, gotErr := enSvc.FindRollById(3)
+		gotValue, gotErr := enSvc.FindIdByRoll(3)
 
 		if !reflect.DeepEqual(gotErr, tt.wantErr) {
 			t.Errorf("got %q, want %q", gotErr, tt.wantErr)

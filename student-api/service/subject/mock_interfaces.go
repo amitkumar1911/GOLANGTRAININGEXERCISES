@@ -62,6 +62,21 @@ func (mr *MocksubjectstoreMockRecorder) CreateSubject(arg0 interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateSubject", reflect.TypeOf((*Mocksubjectstore)(nil).CreateSubject), arg0)
 }
 
+// FindNamesById mocks base method.
+func (m *Mocksubjectstore) FindNamesById(arg0 []int) ([]byte, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindNamesById", arg0)
+	ret0, _ := ret[0].([]byte)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindNamesById indicates an expected call of FindNamesById.
+func (mr *MocksubjectstoreMockRecorder) FindNamesById(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindNamesById", reflect.TypeOf((*Mocksubjectstore)(nil).FindNamesById), arg0)
+}
+
 // GetSubject mocks base method.
 func (m *Mocksubjectstore) GetSubject(id int) ([]byte, error) {
 	m.ctrl.T.Helper()

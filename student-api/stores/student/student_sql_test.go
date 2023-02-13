@@ -51,7 +51,7 @@ func TestGet(t *testing.T) {
 
 	for _, tt := range tests {
 		db, mock, err := sqlmock.New()
-		d := SqlDb{db}
+		d := StudentDb{db}
 
 		if err != nil {
 			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -98,7 +98,7 @@ func TestCreate(t *testing.T) {
 
 	for _, tt := range tests {
 		db, mock, err := sqlmock.New()
-		d := SqlDb{db}
+		d := StudentDb{db}
 
 		if err != nil {
 			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -135,19 +135,19 @@ func TestStudentExist(t *testing.T) {
 		},
 
 		{
-			name:"successfull operation",
-			input:2,
-			mockClosure: func(mock sqlmock.Sqlmock){
-				rs:=mock.NewRows([]string{"Count"}).AddRow(1) 
+			name:  "successfull operation",
+			input: 2,
+			mockClosure: func(mock sqlmock.Sqlmock) {
+				rs := mock.NewRows([]string{"Count"}).AddRow(1)
 				mock.ExpectQuery("SELECT COUNT").WithArgs(2).WillReturnRows(rs)
 			},
-			want:true,
+			want: true,
 		},
 	}
 
 	for _, tt := range tests {
 		db, mock, err := sqlmock.New()
-		d := SqlDb{db}
+		d := StudentDb{db}
 
 		if err != nil {
 			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -157,8 +157,9 @@ func TestStudentExist(t *testing.T) {
 		got := d.StudentExist(tt.input)
 
 		if got != tt.want {
-			t.Errorf("got %q", "different boolean value")
+			t.Errorf("got %s", "different boolean value")
 		}
 
 	}
 }
+

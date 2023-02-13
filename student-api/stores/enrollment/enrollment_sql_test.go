@@ -58,3 +58,56 @@ func TestInsert(t *testing.T) {
 		}
 	}
 }
+
+func TestFindRollById(t *testing.T) {
+
+	tests := []struct {
+		name        string
+		input       int
+		mockClosure func(sqlmock.Sqlmock)
+		wantValue   []int
+		wantErr     error
+	}{
+
+		{
+			name:  "successfull find operation",
+			input: 2,
+			mockClosure: func(mock sqlmock.Sqlmock) {
+				rs := mock.NewRows([]string{"rollno"}).AddRow(3).AddRow(4)
+				mock.ExpectQuery("SELECT").WillReturnRows(rs).WillReturnError(nil)
+			},
+			wantValue: []int{3, 4},
+			wantErr:   nil,
+		},
+		{
+			name:  "unsuccessfull find operation",
+			input: 2,
+			mockClosure: func(mock sqlmock.Sqlmock) {
+				mock.ExpectQuery("SELECT").WillReturnError(nil)
+			},
+			wantValue: []int{},
+			wantErr:   errors.New("some error occured"),
+		},
+	}
+	for _, tt := range tests {
+		db, mock, err := sqlmock.New()
+		d := EnrollDb{db}
+
+		if err != nil {
+			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		}
+
+		tt.mockClosure(mock)
+		gotValue, gotErr := d.FindIdByRoll(tt.input)
+
+		if !reflect.DeepEqual(gotValue, tt.wantValue) {
+			t.Errorf("got %q, want %q", gotValue, tt.wantValue)
+		}
+		if !reflect.DeepEqual(gotErr, tt.wantErr) {
+			t.Errorf("got %q, want %q", gotErr, tt.wantErr)
+
+		}
+
+	}
+
+}

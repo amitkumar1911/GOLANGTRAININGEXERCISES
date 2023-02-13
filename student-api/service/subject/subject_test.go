@@ -166,3 +166,42 @@ func TestSubjectExist(t *testing.T) {
 		}
 	}
 }
+
+func TestFindNamesById(t *testing.T) {
+
+	ctrl := gomock.NewController(t)
+
+	tests := []struct {
+		name      string
+		args      *Mocksubjectstore
+		mockcalls func(*Mocksubjectstore)
+		wantValue []byte
+		wantErr   error
+	}{
+		{
+			name: "successfull operation",
+			args: NewMocksubjectstore(ctrl),
+			mockcalls: func(m *Mocksubjectstore) {
+				m.EXPECT().FindNamesById(gomock.Any()).Return([]byte{}, nil).AnyTimes()
+			},
+			wantValue: []byte{},
+			wantErr:   nil,
+		},
+	}
+
+	for _, tt := range tests {
+
+		tt.mockcalls(tt.args)
+		subSvc := NewSubjectService(tt.args)
+		gotValue, gotErr := subSvc.FindNamesById([]int{2})
+
+		if !reflect.DeepEqual(gotValue, tt.wantValue) {
+			t.Errorf("got %q, want %q", gotValue, tt.wantValue)
+		}
+		if !reflect.DeepEqual(gotErr, tt.wantErr) {
+			t.Errorf("got %q, want %q", gotErr, tt.wantErr)
+
+		}
+	}
+
+}

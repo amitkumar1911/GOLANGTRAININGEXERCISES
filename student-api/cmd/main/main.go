@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/GOLANGTRAININGEXERCISES/student-api/handler"
+	stuHandler "github.com/GOLANGTRAININGEXERCISES/student-api/handler/student"
+	subHandler "github.com/GOLANGTRAININGEXERCISES/student-api/handler/subject"
+
 	enrollService "github.com/GOLANGTRAININGEXERCISES/student-api/service/enrollment"
 	stuService "github.com/GOLANGTRAININGEXERCISES/student-api/service/student"
 	subService "github.com/GOLANGTRAININGEXERCISES/student-api/service/subject"
@@ -28,17 +30,18 @@ func main() {
 	enrollmentService := enrollService.NewEnrollmentService(enrollmentStore)
 	studentService := stuService.NewStudentService(studentStore, subjectService, enrollmentService)
 
-	studentHandler := handler.NewStudentHandler(studentService)
-	subjectHandler := handler.NewSubjectHandler(subjectService)
+	studentHandler := stuHandler.NewStudentHandler(studentService)
+	subjectHandler := subHandler.NewSubjectHandler(subjectService)
 
 	router := mux.NewRouter()
-	router.HandleFunc("/students", studentHandler.Create).Methods("POST")
-	router.HandleFunc("/students/{rollno}", studentHandler.Get).Methods("GET")
+	router.HandleFunc("/students", studentHandler.CreateStudent).Methods("POST")
+	router.HandleFunc("/students/{rollno}", studentHandler.GetStudent).Methods("GET")
 
-	router.HandleFunc("/subjects", subjectHandler.Create).Methods("POST")
-	router.HandleFunc("/subjects/{id}", subjectHandler.Get).Methods("GET")
+	router.HandleFunc("/subjects", subjectHandler.CreateSubject).Methods("POST")
+	router.HandleFunc("/subjects/{id}", subjectHandler.GetSubject).Methods("GET")
 
-	router.HandleFunc("/students/{rollno}/subjects/{id}", studentHandler.EnrollSubject).Methods("POST")
+	router.HandleFunc("/students/{rollno}/subjects/{id}", studentHandler.EnrollStudent).Methods("POST")
+	router.HandleFunc("/students/{rollno}/subjects", studentHandler.GetNames).Methods("GET")
 
 	http.ListenAndServe(":8080", router)
 }

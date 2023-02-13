@@ -100,6 +100,21 @@ func (m *MocksubjectService) EXPECT() *MocksubjectServiceMockRecorder {
 	return m.recorder
 }
 
+// FindNamesById mocks base method.
+func (m *MocksubjectService) FindNamesById(arg0 []int) ([]byte, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindNamesById", arg0)
+	ret0, _ := ret[0].([]byte)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindNamesById indicates an expected call of FindNamesById.
+func (mr *MocksubjectServiceMockRecorder) FindNamesById(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindNamesById", reflect.TypeOf((*MocksubjectService)(nil).FindNamesById), arg0)
+}
+
 // SubjectExist mocks base method.
 func (m *MocksubjectService) SubjectExist(arg0 int) bool {
 	m.ctrl.T.Helper()
@@ -135,6 +150,21 @@ func NewMockenrollmentService(ctrl *gomock.Controller) *MockenrollmentService {
 // EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockenrollmentService) EXPECT() *MockenrollmentServiceMockRecorder {
 	return m.recorder
+}
+
+// FindIdByRoll mocks base method.
+func (m *MockenrollmentService) FindIdByRoll(arg0 int) ([]int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindIdByRoll", arg0)
+	ret0, _ := ret[0].([]int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindIdByRoll indicates an expected call of FindIdByRoll.
+func (mr *MockenrollmentServiceMockRecorder) FindIdByRoll(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindIdByRoll", reflect.TypeOf((*MockenrollmentService)(nil).FindIdByRoll), arg0)
 }
 
 // Insert mocks base method.

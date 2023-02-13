@@ -14,10 +14,12 @@ type studentstore interface {
 
 type subjectService interface {
 	SubjectExist(int) bool
+	FindNamesById([]int) ([]byte, error)
 }
 
 type enrollmentService interface {
 	Insert(int, int) error
+	FindIdByRoll(int) ([]int, error)
 }
 
 type studentService struct {
@@ -65,4 +67,17 @@ func (s studentService) CheckExist(rollno int, id int) error {
 		return errors.New("invalid params")
 	}
 	return s.enrSvc.Insert(rollno, id)
+}
+
+func (s studentService) GetId(rollno int) ([]byte, error) {
+
+	value, err := s.enrSvc.FindIdByRoll(rollno)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	value1, err1 := s.subSvc.FindNamesById(value)
+
+	return value1, err1
+
 }
